@@ -57,22 +57,8 @@ are authenticated and are asking for a stop because you lost your device.
 
 ## Contract structure
 
-This contract is using a factory structure: 
-"Stellar doesn’t allow us to both deploy and initialize a contract atomically and so the ecosystem has adopted the workaround of having a factory contract" 
-(more information: https://github.com/stellar/stellar-protocol/discussions/1499)
-
-
-### Integration of secp256r1 verification:
-
-All the integration has been copied from: 
-https://github.com/stellar/stellar-protocol/discussions/1499
-
-We could call the actual contract but we need to reinstanciate other functionnalities. 
-I would be glad to have more opinions on how to handle modularity here but I see this project as part of the smart wallets functionnalities, so I see the potentiality of this code being copied as a result (rather than the secp256r1 code being copied).
-
-More information on the current state of SW (Smart Wallets):
-https://docs.google.com/document/d/1c_Wom6eK1UpC3E7VuQZfOBCLc2d5lvqAhMN7VPieMBQ/edit?tab=t.0#heading=h.zhjcc9awntwu
-
+I forked the passkey-kit in order to add the functionnalities I want to add directly in it.
+This is here added as a submodule to the project.
 
 ## App
 
