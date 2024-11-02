@@ -1,0 +1,3 @@
+[submodule "passkey-kit"]
+	path = passkey-kit
+	url = git@github.com:Nynko/passkey-kit.git
