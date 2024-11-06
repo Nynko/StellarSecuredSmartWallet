@@ -1,7 +1,8 @@
 
 ## Contract
-- [ ] Recovery
-- [ ] External Entity multisig (special multisig that reference either an address, or several addresses, or a contract for the signers this allows the entity to quickly be able to change the signers in case of the address being compromise without having all the user change it. This contract needs multisginatures itself with very secure handling)
+- [X] Recovery
+- [X] Securer -> External Entity multisig (special multisig that reference either an address, or several addresses, or a contract for the signers this allows the entity to quickly be able to change the signers in case of the address being compromise without having all the user change it. This contract needs multisginatures itself with very secure handling)
+- [ ] Deep Testing (Still issue manually creating the AuthEntries linked to the invocation Tree)
 
 ## App
 - [ ] Account creation

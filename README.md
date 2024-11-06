@@ -1,5 +1,18 @@
 # StellarSecuredSmartWallet
 
+
+**Secure self-custody solutions are essential for crypto inclusion and accessibility.** Currently, owning cryptocurrencies can be risky, and many people may prefer custodial services, even though cryptocurrency offers incomparable alternatives with multisignatures for security.
+
+This project enhances the existing smart wallet implementation on Stellar by adding functionalities that allow:
+- **Wallet Recovery** using an "inactivity time threshold and a social multisignature" mechanism.
+- **Secure External Custody**, allowing an external entity to safeguard wallets by securing its own keys without having control over wallet funds. This feature allows for efficient signer updates in case of compromise, without needing to update each wallet individually.
+
+As explained in the presentation, these tools provide an optimal balance for self-custody, achieving security levels comparable to a bank. They deliver what non-crypto users truly expect: a seamless and secure experience that can pave the way for insurance over crypto-asset ownership.
+
+(Note that users could maintain multiple wallets, some without a securer, to function as full self-custody cash — free from censorship risk.)
+
+
+
 ## Project Presentation 
 This project aims to close the gap between non-crypto users and crypto user by shifting 
 how non-crypto users may access and use self-custody wallets.
@@ -9,13 +22,13 @@ Stellar already offers a number of tools such as recovery tool (with SEP-30: htt
 Here we add functionnalities on the Smart Wallet (SW) and by taking a different approach on these solutions: 
 - We offer a recovery system based on smart contract adding a time based "inactivity" parameter - ensuring inability to recover until enough inactivity has passed.
 - We also add a simple multisignature scheme that is designed to be used by an external signers that acts as a "securer" of the account. It is an external entity that has censorship power but no control of the assets.
-The difference between a simple multisignatures is that here we allow the securer to handle the allowed address by himself (through an external contract for instance). That way, a securer can have a few valid addresses. In case of one being compromise, he can update the storage to adapt the public keys he can use. 
-(This is because, in our case, the private key will be on servers for automatic multisig. Despite the ability to have an enclave, there is still risks involve. It would be beneficial to have a low risk multisig that can update the address in case it is compromise and we want to avoid this having to be done for each wallet!)
+The difference between a simple multisignatures is that here we allow the securer to handle the securer's allowed signers by himself (through an external contract). That way, a securer can have a few valid addresses. In case of one being compromise, he can update the storage to adapt the public keys he can use. 
+(This is because, in our case, the private key will be on servers for automatic multisig. Despite the ability to have an enclave, there is still risks involve. It would be beneficial to have a low risk multisig that can update the addresses in case one is compromise and we want to avoid to have to do this for each wallet!)
 
 While the second functions may not be used (optional) the combinaison of both only rely on a "time" based compromise for controlling the assets, and have no potential breach of security when it comes 
 to assets ownerships during the controlled time period (whereas previous works may rely on external factors which could be compromised at any given time).
 
-This constitute a small compromise for users. 
+This constitute a "small" compromise for users and mostly handled by the wallet/client itself. 
 The external "securer" fonctionnality is done in a way that a "securer" can secure many accounts 
 and potentially act quickly in case of attacks, ensuring funds safety. This is done in order to have potential insurance over assets against thiefs given a high security standards and the fact we have 
 a double authentication system through multisigners.
@@ -85,7 +98,7 @@ Basically we can specify a duration of 0 to ensure a standard social recovery sy
 We can specify a list of recovery entities with threshold and time:
 ```rust
 pub struct Recovery{
-    pub signers: Vec<Signer>, // Maximum 255 signers because it doesn't make sense to have more
+    pub signers: Vec<SignerPubKey>, // Maximum 255 signers because it doesn't make sense to have more
     pub conditions: Vec<Condition>
 }
 
@@ -116,40 +129,32 @@ conditions: [
 ```
 
 
+It has been decided to have the recovery put in a policy. It indeed seems better to keep the Smart Wallet small. However we don't use the fact we could update the "last_active_timestamp" on each authentication almost for "free". It is "good" because we may not need to update it too regularly (it is lost of computation) but at the same time, it implies to have a good system in the wallet to regularly signs another transaction (or include the call in a transaction) just to update the last_active_timestamp.
+
+
 #### Multisig from an external entity
 
 This could be added as a simple signers in the list of signers. But actually, 
 there is a problem if there is a leak or the signer is compromise. 
 This is why it is better to have an external contract that will actually do the checks and 
-controlled the different signers. This could be updated with a multisignature as well, ensuring good security (rather than adding a potential breach of security).
+controlled the different signers. The signers can be updated with an admin multisignature, ensuring good security (rather than adding a potential breach of security).
 
-This can be added as a policy in the smart wallet contract. 
+This is added as a policy as well.
 
-We can add a new interface for this specific kind of policies and also a specific contract 
-implementation for it so external entities/companies can easily deploy this contract that may be audited in the future ensuring good security assumptions.
-
+Since this means we have two authentication (one for the policy and one for admins) we have to use the context in order to do the authentication.
 
 Implementation : 
 
-We have a factory contract and a policy contract
+We have a policy contract
 
-- Admin : Multsig with threshold (https://developers.stellar.org/docs/learn/encyclopedia/security/signatures-multisig)
-- Allowed signers (for the people using the policy) and threshold (almost always 1, it would lead to more cost to add more than one and it feel relatively useless. We only ensure several allowed signers in case of server failure. If a user wants several securers, he can add several policy contract)
-- Update function - updating the allowed signers - admin only
-- __policy implementation
+- Admin : A simple multsig with threshold
+- Allowed signers (for the people using the policy) that use a simple multisig with threshold as well (but it will almost always be 1. It would lead to more cost to add more than one and it feel relatively useless. We only ensure several allowed signers in case of server failure. If a user wants several securers, he can add several policy contract from different securer).
 
 
 ## App
 
-The app has beeing taken from a previous work but any new commits that show differences are commits
-that has been done during the hackathon period. 
-This hackathon as actually only been started a week before the last submission date.
-
-### The wallet
-
-The wallet can store and generate 
-
+I didn't had the time yet to implement it in my wallet app. 
 
 ## Backend 
 
-A rust backend show how to handle multisignatures
+I didn't had the time yet to implement a simple backend handling a securer signature.
