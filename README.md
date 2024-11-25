@@ -12,6 +12,8 @@ As explained in the presentation, these tools provide an optimal balance for sel
 (Note that users could maintain multiple wallets, some without a securer, to function as full self-custody cash — free from censorship risk.)
 
 
+Presentation available here: https://github.com/Nynko/StellarSecuredSmartWallet/blob/main/Presentation_SecuredSmartWallet_v1.pdf
+
 
 ## Project Presentation 
 This project aims to close the gap between non-crypto users and crypto user by shifting 
